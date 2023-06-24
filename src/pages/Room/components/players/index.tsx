@@ -13,7 +13,7 @@ const PlayerList = () => {
     return (
         <Flex flexDirection="column" gap=".5rem">
             <PlayerCard>
-                <Text width="13ch">Aughus Player (host)</Text>
+                <Text width="13ch">Frank Player (host)</Text>
             </PlayerCard>
             <PlayerCard>
                 <Text width="13ch">Test</Text>

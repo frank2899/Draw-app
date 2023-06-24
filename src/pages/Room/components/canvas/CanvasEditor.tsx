@@ -18,7 +18,7 @@ const EditorContaner = styled.div`
     background-color: #c8c8c8;
     position: absolute;
     top: 15px;
-    left: 15px;
+    right: 15px;
     z-index: 100;
     cursor: grab;
     padding: 10px;
@@ -32,6 +32,9 @@ const EditorContent = styled(Flex)`
     background-color: #e1e1e1;
     width: 200px;
     border-radius: 0 0 0.5rem 0.5rem;
+    -webkit-box-shadow: 0 10px 6px -6px #777;
+    -moz-box-shadow: 0 10px 6px -6px #777;
+    box-shadow: 0 10px 6px -6px #777;
 `
 
 const StyledInput = styled.input`
