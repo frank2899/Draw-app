@@ -1,27 +1,41 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from 'react'
+import { useEditor } from '../states/canvas/hook'
+import { setHistoryInterface } from '../states/canvas/reducer'
 
 const useDraw = () => {
-
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const isDrawingRef = useRef<boolean>(false)
-    const prevPointRef = useRef<null | { x: number; y: number }>(null)
+    const prevPointRef = useRef<{ x: number; y: number }>(null)
 
-    const [color, setColor] = useState<string>('#000000')
-    const [pencilWidth, setPencilWidth] = useState<number>(5)
+    const {
+        color,
+        pencilWidth,
+        history,
+        editorCanvas,
+        historyIndex,
+        setColor,
+        addHistory,
+        undo: undoHook,
+        setPencilWidth,
+        setCanvas,
+        setHistoryIndex,
+        clearCanvasHistory,
+    } = useEditor()
 
     const clearCanvas = () => {
-        if (canvasRef.current) {
-            const ctx = canvasRef.current.getContext('2d');
+        if (editorCanvas) {
+            const ctx = editorCanvas.getContext('2d')
             if (!ctx) return
 
-            ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+            ctx.clearRect(0, 0, editorCanvas.width, editorCanvas.height)
+            clearCanvasHistory()
         }
     }
 
     const drawLine = (
         start: { x: number; y: number },
         end: { x: number; y: number },
-        ctx: CanvasRenderingContext2D | null
+        ctx: CanvasRenderingContext2D | null,
     ) => {
         if (!ctx || !start || !end) return
 
@@ -39,9 +53,24 @@ const useDraw = () => {
         ctx.fill()
     }
 
+    const undo = () => {
+        if (history.length > 0) {
+            const ctx = editorCanvas?.getContext('2d')
+            if (!ctx) return
+
+            ctx.clearRect(0, 0, editorCanvas!.width, editorCanvas!.height)
+
+            if (!historyIndex) return
+            undoHook()
+            setHistoryIndex(setHistoryInterface.DECREMENT)
+
+            ctx.putImageData(history[historyIndex], 0, 0)
+        }
+    }
+
     const computePointInCanvas = (
         clientX: number,
-        clientY: number
+        clientY: number,
     ): { x: number; y: number } | null => {
         if (!canvasRef?.current) return null
 
@@ -52,9 +81,7 @@ const useDraw = () => {
         }
     }
 
-    const onMouseMove: any = (
-        e: any
-    ) => {
+    const onMouseMove: any = (e: any) => {
         if (isDrawingRef.current && canvasRef.current) {
             const point = computePointInCanvas(e.clientX, e.clientY)
             const ctx = canvasRef.current.getContext('2d')
@@ -66,6 +93,16 @@ const useDraw = () => {
     const onMouseUp: any = () => {
         isDrawingRef.current = false
         prevPointRef.current = null
+
+        const canvas = canvasRef.current
+
+        if (!canvas) return
+        addHistory(
+            canvas
+                .getContext('2d')
+                ?.getImageData(0, 0, canvas.width, canvas.height) as ImageData,
+        )
+        setHistoryIndex(setHistoryInterface.INCREMENT)
     }
 
     const onMouseDown: any = () => {
@@ -75,43 +112,49 @@ const useDraw = () => {
     const resizeCanvas: any = () => {
         if (!canvasRef.current) return
         const { width, height } = canvasRef.current.getBoundingClientRect()
-        const ctx: CanvasRenderingContext2D | null = canvasRef.current.getContext('2d')
+        const ctx: CanvasRenderingContext2D | null =
+            canvasRef.current.getContext('2d')
 
         const scale = window.devicePixelRatio
-  
+
         canvasRef.current.width = width * scale
         canvasRef.current.height = height * scale
         ctx?.scale(scale, scale)
     }
 
     const initListeners = () => {
-        if(!canvasRef.current) return
+        if (!canvasRef.current) return
 
-        canvasRef.current.addEventListener("mouseup", onMouseUp)
-        canvasRef.current.addEventListener("mousemove", onMouseMove)
-        canvasRef.current.addEventListener("mousedown", onMouseDown)
-        canvasRef.current.addEventListener("mouseout", onMouseUp)
+        canvasRef.current.addEventListener('mouseup', onMouseUp)
+        canvasRef.current.addEventListener('mousemove', onMouseMove)
+        canvasRef.current.addEventListener('mousedown', onMouseDown)
+        canvasRef.current.addEventListener('mouseout', onMouseUp)
         window.addEventListener('resize', resizeCanvas)
     }
 
     const cleanup = () => {
-        if(!canvasRef.current) return
+        if (!canvasRef.current) return
 
-        canvasRef.current.removeEventListener("mousemove", onMouseMove)
-        canvasRef.current.removeEventListener("mouseup", onMouseUp)
-        canvasRef.current.removeEventListener("mouseout", onMouseUp)
-        canvasRef.current.removeEventListener("mousedown", onMouseDown)
-        window.removeEventListener("resize", resizeCanvas)
+        canvasRef.current.removeEventListener('mousemove', onMouseMove)
+        canvasRef.current.removeEventListener('mouseup', onMouseUp)
+        canvasRef.current.removeEventListener('mouseout', onMouseUp)
+        canvasRef.current.removeEventListener('mousedown', onMouseDown)
+        window.removeEventListener('resize', resizeCanvas)
     }
-    
+
     useEffect(() => {
         if (canvasRef.current) {
+            setCanvas(canvasRef.current)
             resizeCanvas()
-            initListeners()
-
-            return cleanup
         }
     }, [canvasRef.current])
+
+    useEffect(() => {
+        if (canvasRef.current) {
+            initListeners()
+            return cleanup
+        }
+    }, [canvasRef.current, color, pencilWidth])
 
     return {
         // REFS
@@ -125,7 +168,8 @@ const useDraw = () => {
         setColor,
 
         // FUNCTIONS
-        clearCanvas
+        clearCanvas,
+        undo,
     }
 }
 

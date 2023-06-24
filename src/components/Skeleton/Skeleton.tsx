@@ -1,7 +1,11 @@
 import React from 'react'
 import styled, { keyframes } from 'styled-components'
 import { space, layout } from 'styled-system'
-import { SkeletonProps, animation as ANIMATION, variant as VARIANT } from "./types";
+import {
+    SkeletonProps,
+    animation as ANIMATION,
+    variant as VARIANT,
+} from './types'
 
 const waves = keyframes`
    from {
@@ -61,12 +65,16 @@ const Waves = styled(Root)`
     }
 `
 
-const Skeleton: React.FC<SkeletonProps> = ({ variant = VARIANT.RECT, animation = ANIMATION.PULSE, ...props }) => {
+const Skeleton: React.FC<SkeletonProps> = ({
+    variant = VARIANT.RECT,
+    animation = ANIMATION.PULSE,
+    ...props
+}) => {
     if (animation === ANIMATION.WAVES) {
-      return <Waves variant={variant} {...props} />;
+        return <Waves variant={variant} {...props} />
     }
-  
-    return <Pulse variant={variant} {...props} />;
-  };
-  
-  export default Skeleton;
+
+    return <Pulse variant={variant} {...props} />
+}
+
+export default Skeleton

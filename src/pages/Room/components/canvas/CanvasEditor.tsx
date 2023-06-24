@@ -1,6 +1,7 @@
-import { useEffect, useRef } from "react"
-import { Box, Flex } from "../../../../components"
-import { styled } from "styled-components"
+import { useEffect, useRef } from 'react'
+import { Box, Flex, Text } from '../../../../components'
+import { styled } from 'styled-components'
+import useDraw from '../../../../hooks/useDraw'
 
 interface CoordsTypes {
     x: number
@@ -20,34 +21,64 @@ const EditorContaner = styled.div`
     left: 15px;
     z-index: 100;
     cursor: grab;
-    padding:10px;
-    width:200px
+    padding: 10px;
+    width: 200px;
 `
 
 const EditorContent = styled(Flex)`
-    position:absolute;
-    top:100%;
-    left:0;
+    position: absolute;
+    top: 100%;
+    left: 0;
     background-color: #e1e1e1;
-    width:200px;
+    width: 200px;
     border-radius: 0 0 0.5rem 0.5rem;
+`
+
+const StyledInput = styled.input`
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 30px;
+    height: 30px;
+    border: none;
+    overflow: hidden;
+    border-radius: 1rem;
+    background-color: transparent;
+    cursor: pointer;
+
+    ::-webkit-color-swatch {
+        border-radius: 15px;
+        border: none;
+    }
+
+    ::-moz-color-swatch {
+        border-radius: 15px;
+        border: none;
+    }
 `
 
 const CanvasEditor = () => {
     const editorContainer = useRef<HTMLDivElement>(null)
     const isClicked = useRef<boolean>(false)
     const coords = useRef<CoordsTypes>({ x: 0, y: 0, prevX: 0, prevY: 0 })
+    const { color, pencilWidth, setColor, setPencilWidth, clearCanvas, undo } =
+        useDraw()
 
     const onMouseDown = (e: MouseEvent) => {
-        if (e.button !== 0) return
+        if (
+            e.button !== 0 ||
+            (editorContainer.current && e.target !== editorContainer.current)
+        )
+            return
 
         isClicked.current = true
         coords.current = { ...coords.current, x: e.clientX, y: e.clientY }
 
-        if (editorContainer.current) editorContainer.current.style.cursor = 'grabbing'
+        if (editorContainer.current)
+            editorContainer.current.style.cursor = 'grabbing'
     }
 
-    const onMouseUp = () => {        
+    const onMouseUp = () => {
         isClicked.current = false
 
         if (!editorContainer.current) return
@@ -57,7 +88,8 @@ const CanvasEditor = () => {
             prevY: editorContainer.current.offsetTop,
         }
 
-        if (editorContainer.current) editorContainer.current.style.cursor = 'grab'
+        if (editorContainer.current)
+            editorContainer.current.style.cursor = 'grab'
     }
 
     const onMouseMove = (e: MouseEvent) => {
@@ -75,19 +107,19 @@ const CanvasEditor = () => {
     const initListeners = () => {
         if (!editorContainer.current) return
 
-        editorContainer.current.addEventListener("mouseup", onMouseUp)
-        editorContainer.current.addEventListener("mousedown", onMouseDown)
+        editorContainer.current.addEventListener('mouseup', onMouseUp)
+        editorContainer.current.addEventListener('mousedown', onMouseDown)
 
-        window.addEventListener("mousemove", onMouseMove)
+        window.addEventListener('mousemove', onMouseMove)
     }
 
     const cleanUp = () => {
         if (!editorContainer.current) return
 
-        editorContainer.current.removeEventListener("mouseup", onMouseUp)
-        editorContainer.current.removeEventListener("mousedown", onMouseDown)
+        editorContainer.current.removeEventListener('mouseup', onMouseUp)
+        editorContainer.current.removeEventListener('mousedown', onMouseDown)
 
-        window.removeEventListener("mousemove", onMouseMove)
+        window.removeEventListener('mousemove', onMouseMove)
     }
 
     useEffect(() => {
@@ -101,9 +133,23 @@ const CanvasEditor = () => {
     return (
         <EditorContaner ref={editorContainer}>
             <EditorContent p="10px" flexDirection="column" gap="10px">
-                <input type="range"/>
-                <input type="color"/>
-                <button>clear</button>
+                <Flex justifyContent="space-between" alignItems="center">
+                    <Text fontSize=".7rem">Brush color &nbsp;</Text>
+                    <StyledInput
+                        type="color"
+                        value={color}
+                        onChange={(e) => setColor(e.target.value)}
+                    />
+                </Flex>
+                <input
+                    type="range"
+                    min="1"
+                    max="10"
+                    value={pencilWidth}
+                    onChange={(e) => setPencilWidth(e.target.value)}
+                />
+                <button onClick={() => undo()}>Undo</button>
+                <button onClick={() => clearCanvas()}>Clear</button>
             </EditorContent>
         </EditorContaner>
     )

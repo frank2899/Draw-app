@@ -1,12 +1,16 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
+import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
-// import Providers from './providers'
+import { Fragment } from 'react'
+import { Provider } from 'react-redux'
+import store from './states/index.ts'
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.Fragment>
-    {/* <Providers> */}
-      <App />
-    {/* </Providers> */}
-  </React.Fragment>,
+const RootElem = document.getElementById('root')
+const Root = createRoot(RootElem as HTMLElement)
+
+Root.render(
+    <Fragment>
+        <Provider store={store}>
+            <App />
+        </Provider>
+    </Fragment>,
 )
