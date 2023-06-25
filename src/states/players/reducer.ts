@@ -12,8 +12,8 @@ interface ListState {
 }
 
 const initialState: ListState = {
-    playerId: '',
-    playerName: '',
+    playerId: '123',
+    playerName: 'Frank Player',
     room: {
         players: [],
         roomId: '',

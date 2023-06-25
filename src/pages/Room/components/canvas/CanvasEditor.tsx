@@ -114,6 +114,8 @@ const CanvasEditor = () => {
         editorContainer.current.addEventListener('mousedown', onMouseDown)
 
         window.addEventListener('mousemove', onMouseMove)
+
+        onMouseUp()
     }
 
     const cleanUp = () => {
