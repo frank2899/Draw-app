@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { Box, Flex, Text } from '../../../../components'
+import { Flex, Text } from '../../../../components'
 import { styled } from 'styled-components'
 import useDraw from '../../../../hooks/useDraw'
 
@@ -146,8 +146,8 @@ const CanvasEditor = () => {
                 </Flex>
                 <input
                     type="range"
-                    min="1"
-                    max="10"
+                    min="5"
+                    max="30"
                     value={pencilWidth}
                     onChange={(e) => setPencilWidth(e.target.value)}
                 />

@@ -1,9 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import canvas from './canvas/reducer'
+import chats from './chats/reducer'
+import players from './players/reducer'
 
 const store = configureStore({
     reducer: {
         canvas,
+        chats,
+        players,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

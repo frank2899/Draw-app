@@ -1,5 +1,6 @@
 import { styled } from 'styled-components'
 import { Box, Flex, Text } from '../../../../components'
+import ChatBox from './chats'
 
 const PlayerCard = styled(Box)`
     border: 1px solid black;
@@ -30,6 +31,11 @@ const PlayerList = () => {
             <PlayerCard>
                 <Text width="13ch">frankyy</Text>
             </PlayerCard>
+            <PlayerCard>
+                <Text width="13ch">frankyy</Text>
+            </PlayerCard>
+
+            <ChatBox />
         </Flex>
     )
 }

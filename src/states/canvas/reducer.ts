@@ -9,19 +9,7 @@ import {
     setHistoryIndex,
     clearCanvasHistory,
 } from './action'
-
-export interface ListsState {
-    color: string
-    pencilWidth: number
-    history: ImageData[]
-    canvas: HTMLCanvasElement | null
-    historyIndex: number
-}
-
-export enum setHistoryInterface {
-    INCREMENT = 'increment',
-    DECREMENT = 'decrement',
-}
+import { ListsState, setHistoryInterface } from './types'
 
 const initialState: ListsState = {
     color: '#000000',
