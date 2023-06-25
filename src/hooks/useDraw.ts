@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { useEditor } from '../states/canvas/hook'
-import { setHistoryInterface } from '../states/canvas/reducer'
+import { setHistoryInterface } from '../states/canvas/types'
 
 const useDraw = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const isDrawingRef = useRef<boolean>(false)
-    const prevPointRef = useRef<{ x: number; y: number }>(null)
+    const prevPointRef = useRef<{ x: number; y: number } | null>(null)
 
     const {
         color,
@@ -43,6 +43,8 @@ const useDraw = () => {
         ctx.beginPath()
         ctx.lineWidth = pencilWidth
         ctx.strokeStyle = color
+        ctx.lineCap = 'round'
+        ctx.lineJoin = 'round'
         ctx.moveTo(start.x, start.y)
         ctx.lineTo(end.x, end.y)
         ctx.stroke()
@@ -90,13 +92,13 @@ const useDraw = () => {
         }
     }
 
-    const onMouseUp: any = () => {
+    const onMouseUp: any = (e: any) => {
         isDrawingRef.current = false
         prevPointRef.current = null
 
         const canvas = canvasRef.current
 
-        if (!canvas) return
+        if (!canvas || e.type !== 'mouseup') return
         addHistory(
             canvas
                 .getContext('2d')

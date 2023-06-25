@@ -1,16 +1,26 @@
+import React, { Suspense } from 'react'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
-import Home from './pages/Home'
-import Room from './pages/Room'
 import GlobalStyle from './global.style'
+
+const Home = React.lazy(() => import('./pages/Home'))
+const Room = React.lazy(() => import('./pages/Room'))
 
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <Home />,
+        element: (
+            <Suspense fallback={<div>Loading...</div>}>
+                <Home />
+            </Suspense>
+        ),
     },
     {
         path: '/room',
-        element: <Room />,
+        element: (
+            <Suspense fallback={<div>Loading...</div>}>
+                <Room />
+            </Suspense>
+        ),
     },
 ])
 

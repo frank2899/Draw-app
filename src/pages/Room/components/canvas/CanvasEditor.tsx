@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { Box, Flex, Text } from '../../../../components'
+import { Flex, Text } from '../../../../components'
 import { styled } from 'styled-components'
 import useDraw from '../../../../hooks/useDraw'
 
@@ -18,7 +18,7 @@ const EditorContaner = styled.div`
     background-color: #c8c8c8;
     position: absolute;
     top: 15px;
-    left: 15px;
+    right: 15px;
     z-index: 100;
     cursor: grab;
     padding: 10px;
@@ -32,6 +32,9 @@ const EditorContent = styled(Flex)`
     background-color: #e1e1e1;
     width: 200px;
     border-radius: 0 0 0.5rem 0.5rem;
+    -webkit-box-shadow: 0 10px 6px -6px #777;
+    -moz-box-shadow: 0 10px 6px -6px #777;
+    box-shadow: 0 10px 6px -6px #777;
 `
 
 const StyledInput = styled.input`
@@ -143,8 +146,8 @@ const CanvasEditor = () => {
                 </Flex>
                 <input
                     type="range"
-                    min="1"
-                    max="10"
+                    min="5"
+                    max="30"
                     value={pencilWidth}
                     onChange={(e) => setPencilWidth(e.target.value)}
                 />
