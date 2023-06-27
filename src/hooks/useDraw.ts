@@ -45,14 +45,29 @@ const useDraw = () => {
         ctx.strokeStyle = color
         ctx.lineCap = 'round'
         ctx.lineJoin = 'round'
-        ctx.moveTo(start.x, start.y)
-        ctx.lineTo(end.x, end.y)
-        ctx.stroke()
+        ctx.imageSmoothingEnabled = true
+        // ctx.moveTo(start.x, start.y)
+        // ctx.lineTo(end.x, end.y)
+        // ctx.stroke()
 
-        ctx.fillStyle = color
-        ctx.beginPath()
-        ctx.arc(start.x, start.y, 2, 0, 2 * Math.PI)
-        ctx.fill()
+        if (start.x === end.x && start.y === end.y) {
+            // Draw a dot
+            ctx.fillStyle = color
+            ctx.beginPath()
+            ctx.arc(start.x, start.y, 2, 0, 2 * Math.PI)
+            ctx.fill()
+        } else {
+            // Draw a line
+            ctx.moveTo(start.x, start.y)
+            // ctx.lineTo(end.x, end.y)
+            ctx.quadraticCurveTo(
+                start.x + (end.x - start.x) / 2, // Control point x-coordinate
+                start.y + (end.y - start.y) / 2, // Control point y-coordinate
+                end.x,
+                end.y, // Destination point
+            )
+            ctx.stroke()
+        }
     }
 
     const undo = () => {
@@ -107,8 +122,21 @@ const useDraw = () => {
         setHistoryIndex(setHistoryInterface.INCREMENT)
     }
 
-    const onMouseDown: any = () => {
+    const onMouseDown = (e: MouseEvent) => {
         isDrawingRef.current = true
+
+        if (isDrawingRef.current && canvasRef.current) {
+            const point = computePointInCanvas(e.clientX, e.clientY)
+            const ctx = canvasRef.current.getContext('2d')
+
+            if (point && prevPointRef.current) {
+                drawLine(point, prevPointRef.current, ctx)
+            } else if (point) {
+                drawLine(point, point, ctx) // Draw a dot
+            }
+
+            prevPointRef.current = point
+        }
     }
 
     const resizeCanvas: any = () => {

@@ -18,7 +18,7 @@ const EditorContaner = styled.div`
     background-color: #c8c8c8;
     position: absolute;
     top: 15px;
-    right: 15px;
+    left: 15px;
     z-index: 100;
     cursor: grab;
     padding: 10px;
@@ -96,12 +96,9 @@ const CanvasEditor = () => {
     }
 
     const onMouseMove = (e: MouseEvent) => {
-        if (!isClicked.current) return
-
+        if (!isClicked.current || !editorContainer.current) return
         const moveToX = e.clientX - coords.current.x + coords.current.prevX
         const moveToY = e.clientY - coords.current.y + coords.current.prevY
-
-        if (!editorContainer.current) return
 
         editorContainer.current.style.top = `${moveToY}px`
         editorContainer.current.style.left = `${moveToX}px`
@@ -110,12 +107,16 @@ const CanvasEditor = () => {
     const initListeners = () => {
         if (!editorContainer.current) return
 
+        coords.current = {
+            ...coords.current,
+            prevX: editorContainer.current.offsetLeft,
+            prevY: editorContainer.current.offsetTop,
+        }
+
         editorContainer.current.addEventListener('mouseup', onMouseUp)
         editorContainer.current.addEventListener('mousedown', onMouseDown)
 
         window.addEventListener('mousemove', onMouseMove)
-
-        onMouseUp()
     }
 
     const cleanUp = () => {
