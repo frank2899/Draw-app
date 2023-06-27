@@ -1,9 +1,9 @@
 import { styled } from 'styled-components'
-import { Box, Flex, Text } from '../../../../components'
-import { useChats } from '../../../../states/chats/hook'
-import { IChat } from '../../../../states/chats/types'
+import { Box, Flex, Text } from '../../../components'
+import { useChats } from '../../../states/chats/hook'
+import { IChat } from '../../../states/chats/types'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { usePlayers } from '../../../../states/players/hook'
+import { usePlayers } from '../../../states/players/hook'
 
 const ChatContainer = styled(Flex)`
     height: 328px;
@@ -45,7 +45,7 @@ const ChatBox = () => {
 
             chatContainerRef.scrollTo({
                 top: chatContainerRef.scrollHeight,
-                behavior: 'smooth',
+                // behavior: 'smooth',
             })
         }
     }, [messageList])

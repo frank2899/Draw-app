@@ -1,6 +1,7 @@
 import { Box, Flex } from '../../components'
 import DrawingPad from './components/canvas/DrawingPad'
-import PlayerList from './components/players'
+import ChatBox from './components/Chatbox'
+import PlayerList from './components/Players'
 
 const Room = () => {
     return (
@@ -8,6 +9,9 @@ const Room = () => {
             <Flex gap="1rem">
                 <PlayerList />
                 <DrawingPad />
+                <Box>
+                    <ChatBox />
+                </Box>
             </Flex>
         </Box>
     )

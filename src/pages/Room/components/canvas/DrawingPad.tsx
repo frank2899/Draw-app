@@ -2,8 +2,6 @@ import { styled } from 'styled-components'
 import useDraw from '../../../../hooks/useDraw'
 import { Box, Flex, Text } from '../../../../components'
 import CanvasEditor from './CanvasEditor'
-import { useState } from 'react'
-import { useChats } from '../../../../states/chats/hook'
 
 const StyledCanvas = styled.canvas`
     width: 100%;
@@ -18,8 +16,6 @@ const StyledCanvas = styled.canvas`
 
 const DrawingPad: React.FC = () => {
     const { canvasRef } = useDraw()
-    const [message, setMessage] = useState<string>('')
-    const { sendMessage } = useChats()
 
     return (
         <Flex flexDirection="column" gap=".5rem">
@@ -42,20 +38,6 @@ const DrawingPad: React.FC = () => {
             <Box position="relative">
                 <StyledCanvas ref={canvasRef} />
                 <CanvasEditor />
-            </Box>
-
-            <Box
-                border="1px solid black"
-                borderRadius="0.5rem"
-                padding=".5rem"
-                background="white"
-            >
-                <input
-                    value={message}
-                    onInput={(e: any) => setMessage(e.target.value)}
-                    style={{ width: '100%', padding: '.5rem' }}
-                    placeholder="Write your guess here..."
-                />
             </Box>
         </Flex>
     )
